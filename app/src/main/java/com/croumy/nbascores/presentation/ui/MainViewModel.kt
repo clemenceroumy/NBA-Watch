@@ -17,7 +17,6 @@ class MainViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             getGames()
-
         }
     }
 

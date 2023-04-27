@@ -1,5 +1,8 @@
 import com.croumy.nbascores.presentation.data.TeamPicture
+import com.croumy.nbascores.presentation.helpers.TIME
+import com.croumy.nbascores.presentation.helpers.toDate
 import com.croumy.nbascores.presentation.models.enums.GameStatus
+import java.util.Date
 
 data class TodayGames(
     val scoreboard: ScoreboardResponse
@@ -19,7 +22,7 @@ data class Game(
     val gameStatusText: String,
     val period: Int,
     val gameClock: String,
-    val gameTimeUTC: String,
+    val gameTimeUTC: String, //2023-04-23T17:00:00Z
     val gameEt: String,
     val regulationPeriods: Int,
     val ifNecessary: Boolean,
@@ -40,7 +43,7 @@ data class Game(
         else -> GameStatus.NOT_STARTED
     }
 
-    val gameVsName: String get() = "${homeTeam.teamName} vs ${awayTeam.teamName}"
+    val gameTime: Date get() = gameTimeUTC.toDate()
     val gameScore: String get() = "${homeTeam.score} - ${awayTeam.score}"
 }
 
