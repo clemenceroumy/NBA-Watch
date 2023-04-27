@@ -11,16 +11,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.Text
+import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.items
 import coil.compose.AsyncImage
 import com.croumy.nbascores.R
@@ -30,106 +41,144 @@ import com.croumy.nbascores.presentation.models.enums.GameStatus
 import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.red
 import com.croumy.nbascores.presentation.ui.MainViewModel
+import com.valentinilk.shimmer.shimmer
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = MainViewModel(),
 ) {
-    ScalingLazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.xsPadding),
-        autoCentering = AutoCenteringParams(),
-    ) {
-        item {
+    val coroutineScope = rememberCoroutineScope()
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    val pullRefreshState = rememberPullRefreshState(
+        isRefreshing,
+        refreshThreshold = 50.dp,
+        onRefresh = {
+            coroutineScope.launch {
+                isRefreshing = true
+                viewModel.getGames()
+                isRefreshing = false
+            }
+        }
+    )
+
+    TimeText()
+    Box(Modifier.pullRefresh(pullRefreshState)) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(top = Dimensions.mPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Text(Calendar.getInstance().time.asString())
             Spacer(Modifier.height(Dimensions.xsPadding))
-        }
-        items(viewModel.games.value) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface, CircleShape)
-                    .padding(horizontal = Dimensions.sPadding)
-                    .padding(bottom = Dimensions.sPadding),
+            ScalingLazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(Dimensions.xsPadding),
             ) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Spacer(Modifier.height(Dimensions.xsPadding))
-                    when (it.gameStatusValue) {
-                        GameStatus.NOT_STARTED -> Text(
-                            text = it.gameTime.asString(TIME),
-                            style = MaterialTheme.typography.body2,
+                if (viewModel.isLoading.value) {
+                    items((0..1).toList()) {
+                        Box(
+                            Modifier
+                                .shimmer()
+                                .background(MaterialTheme.colors.surface, CircleShape)
+                                .fillMaxWidth()
+                                .height(Dimensions.lSize)
                         )
-                        GameStatus.LIVE -> {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    Modifier
-                                        .size(Dimensions.xxsIcon)
-                                        .background(red, CircleShape)
-                                )
-                                Spacer(Modifier.width(Dimensions.xxsPadding))
-                                Text(
-                                    text = it.period.toString(),
-                                    style = MaterialTheme.typography.body2,
-                                )
-                            }
-                        }
+                    }
+                } else {
+                    items(viewModel.games.value) {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colors.surface, CircleShape)
+                                .padding(horizontal = Dimensions.sPadding)
+                                .padding(bottom = Dimensions.sPadding),
+                        ) {
+                            Column(
+                                Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Spacer(Modifier.height(Dimensions.xxsPadding))
+                                when (it.gameStatusValue) {
+                                    GameStatus.NOT_STARTED -> Text(
+                                        text = it.gameTime.asString(TIME),
+                                        style = MaterialTheme.typography.body2,
+                                    )
 
-                        GameStatus.FINISHED -> Text(
-                            text = stringResource(id = R.string.done),
-                            style = MaterialTheme.typography.body2,
-                        )
-                    }
-                    Spacer(Modifier.height(Dimensions.xxsPadding))
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row {
-                        AsyncImage(
-                            model = it.homeTeam.logo,
-                            contentDescription = "",
-                            modifier = Modifier.size(Dimensions.sIcon)
-                        )
-                        Spacer(Modifier.width(Dimensions.xxsPadding))
-                        Text(text = it.homeTeam.teamName)
-                    }
-                    if (it.gameStatusValue == GameStatus.LIVE) {
-                        Row {
-                            Spacer(Modifier.width(Dimensions.xsPadding))
-                            Text(text = it.homeTeam.score.toString())
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row {
-                        AsyncImage(
-                            model = it.awayTeam.logo,
-                            contentDescription = "",
-                            modifier = Modifier.size(Dimensions.sIcon)
-                        )
-                        Spacer(Modifier.width(Dimensions.xxsPadding))
-                        Text(text = it.awayTeam.teamName)
-                    }
-                    if (it.gameStatusValue == GameStatus.LIVE) {
-                        Row {
-                            Spacer(Modifier.width(Dimensions.xsPadding))
-                            Text(text = it.homeTeam.score.toString())
+                                    GameStatus.LIVE -> {
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Box(
+                                                Modifier
+                                                    .size(Dimensions.xxsIcon)
+                                                    .background(red, CircleShape)
+                                            )
+                                            Spacer(Modifier.width(Dimensions.xxsPadding))
+                                            Text(
+                                                text = it.period.toString(),
+                                                style = MaterialTheme.typography.body2,
+                                            )
+                                        }
+                                    }
+
+                                    GameStatus.FINISHED -> Text(
+                                        text = stringResource(id = R.string.done),
+                                        style = MaterialTheme.typography.body2,
+                                    )
+                                }
+                                Spacer(Modifier.height(Dimensions.xxsPadding))
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row {
+                                    AsyncImage(
+                                        model = it.homeTeam.logo,
+                                        contentDescription = "",
+                                        modifier = Modifier.size(Dimensions.sIcon)
+                                    )
+                                    Spacer(Modifier.width(Dimensions.xxsPadding))
+                                    Text(text = it.homeTeam.teamName)
+                                }
+                                if (it.gameStatusValue == GameStatus.LIVE) {
+                                    Row {
+                                        Spacer(Modifier.width(Dimensions.xsPadding))
+                                        Text(text = it.homeTeam.score.toString())
+                                    }
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Row {
+                                    AsyncImage(
+                                        model = it.awayTeam.logo,
+                                        contentDescription = "",
+                                        modifier = Modifier.size(Dimensions.sIcon)
+                                    )
+                                    Spacer(Modifier.width(Dimensions.xxsPadding))
+                                    Text(text = it.awayTeam.teamName)
+                                }
+                                if (it.gameStatusValue == GameStatus.LIVE) {
+                                    Row {
+                                        Spacer(Modifier.width(Dimensions.xsPadding))
+                                        Text(text = it.homeTeam.score.toString())
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+        PullRefreshIndicator(isRefreshing, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
 }
 

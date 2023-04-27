@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 class Dimensions {
     companion object {
+        val mPadding = 24.dp
         val sPadding = 16.dp
         val xsPadding = 8.dp
         val xxsPadding = 4.dp
@@ -14,5 +15,8 @@ class Dimensions {
 
         val sIcon = 24.dp
         val xxsIcon = 4.dp
+
+        val lSize = 70.dp
+        val mSize = 50.dp
     }
 }

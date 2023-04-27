@@ -14,14 +14,16 @@ class MainViewModel : ViewModel() {
 
     val games: MutableState<List<Game>> = mutableStateOf(emptyList())
 
+    val isLoading: MutableState<Boolean> = mutableStateOf(false)
+
     init {
-        viewModelScope.launch {
-            getGames()
-        }
+        viewModelScope.launch { getGames() }
     }
 
-    private suspend fun getGames() {
+    suspend fun getGames() {
+        isLoading.value = true
         val result = liveService.getTodayGames()
         games.value = result?.scoreboard?.games ?: emptyList()
+        isLoading.value = false
     }
 }
