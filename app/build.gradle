@@ -49,18 +49,23 @@ dependencies {
     def compose_version = '1.4.2'
     def wear_compose_version = '1.1.2'
 
+    // CORE
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'com.google.android.gms:play-services-wearable:18.0.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+
+    // COMPOSE
+    implementation 'androidx.activity:activity-compose:1.7.1'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.wear.compose:compose-material:$wear_compose_version"
     implementation "androidx.wear.compose:compose-foundation:$wear_compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.1'
+    implementation "androidx.wear.compose:compose-navigation:$wear_compose_version"
+
 
     // Data
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
