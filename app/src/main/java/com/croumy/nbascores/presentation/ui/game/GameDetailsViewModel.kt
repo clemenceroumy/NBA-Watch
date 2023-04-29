@@ -7,10 +7,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.croumy.nbascores.presentation.data.LiveService
+import com.croumy.nbascores.presentation.models.enums.GameStatus
 import com.croumy.nbascores.presentation.navigation.NavRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.seconds
 
 @HiltViewModel
 class GameDetailsViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) : ViewModel() {
@@ -20,7 +23,18 @@ class GameDetailsViewModel @Inject constructor(private val savedStateHandle: Sav
 
     val game: MutableState<Game?> = mutableStateOf(null)
 
-    init { viewModelScope.launch { getGame() } }
+    init {
+        viewModelScope.launch {
+            getGame()
+
+            if(game.value != null && game.value!!.gameStatusValue == GameStatus.LIVE) {
+                while (true) {
+                    delay(60.seconds)
+                    getGame()
+                }
+            }
+        }
+    }
 
     suspend fun getGame() {
         val result = liveService.getTodayGames()

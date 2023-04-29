@@ -72,7 +72,7 @@ fun GameDetailsScreen(
                             style = if (game.homeTeam.score > game.awayTeam.score) MaterialTheme.typography.title1 else MaterialTheme.typography.title2
                         )
                         Spacer(Modifier.width(Dimensions.xsPadding))
-                        Text(text = " - ")
+                        Text(text = "-", style = MaterialTheme.typography.title2)
                         Spacer(Modifier.width(Dimensions.xsPadding))
                         Text(
                             text = game.awayTeam.score.toString(),
