@@ -51,6 +51,7 @@ import com.croumy.nbascores.presentation.helpers.asString
 import com.croumy.nbascores.presentation.models.enums.GameStatus
 import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.red
+import com.croumy.nbascores.presentation.ui.components.LiveIndicator
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -142,11 +143,7 @@ fun HomeScreen(
 
                                         GameStatus.LIVE -> {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Box(
-                                                    Modifier
-                                                        .size(Dimensions.xxsIcon)
-                                                        .background(red, CircleShape)
-                                                )
+                                                LiveIndicator()
                                                 Spacer(Modifier.width(Dimensions.xxsPadding))
                                                 Text(
                                                     text = it.period.toString(),

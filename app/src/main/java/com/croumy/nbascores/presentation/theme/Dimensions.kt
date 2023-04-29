@@ -15,7 +15,7 @@ class Dimensions {
         val sRadius = 5.dp
 
         val sIcon = 24.dp
-        val xxsIcon = 4.dp
+        val xxsIcon = 5.dp
 
         val lSize = 70.dp
         val mSize = 50.dp
