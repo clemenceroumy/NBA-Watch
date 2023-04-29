@@ -51,6 +51,7 @@ import com.croumy.nbascores.presentation.helpers.asString
 import com.croumy.nbascores.presentation.models.enums.GameStatus
 import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.red
+import com.croumy.nbascores.presentation.theme.shimmerColor
 import com.croumy.nbascores.presentation.ui.components.LiveIndicator
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ fun HomeScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         isRefreshing,
-        refreshThreshold = 50.dp,
+        refreshThreshold = 20.dp,
         onRefresh = {
             coroutineScope.launch {
                 isRefreshing = true
@@ -93,7 +94,7 @@ fun HomeScreen(
                     .padding(top = Dimensions.mPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(Calendar.getInstance().time.asString())
+                Text(Calendar.getInstance().time.asString(), style = MaterialTheme.typography.body2)
                 Spacer(Modifier.height(Dimensions.xsPadding))
                 ScalingLazyColumn(
                     state = listState,
@@ -116,7 +117,7 @@ fun HomeScreen(
                             Box(
                                 Modifier
                                     .shimmer()
-                                    .background(MaterialTheme.colors.surface, CircleShape)
+                                    .background(shimmerColor, CircleShape)
                                     .fillMaxWidth()
                                     .height(Dimensions.lSize)
                             )

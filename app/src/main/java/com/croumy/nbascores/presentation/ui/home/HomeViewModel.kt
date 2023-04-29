@@ -20,7 +20,6 @@ class HomeViewModel : ViewModel() {
         isLoading.value = true
         val result = liveService.getTodayGames()
         games.value = result?.scoreboard?.games ?: emptyList()
-        games.value = games.value.map { it.copy(gameStatus = 2) }
         isLoading.value = false
     }
 }
