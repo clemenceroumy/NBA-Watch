@@ -1,6 +1,7 @@
 package com.croumy.nbascores.presentation
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -13,6 +14,7 @@ import dagger.hilt.android.HiltAndroidApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberSwipeDismissableNavController()
 
