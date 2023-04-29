@@ -1,5 +1,3 @@
-import com.croumy.nbascores.presentation.data.TeamPicture
-import com.croumy.nbascores.presentation.helpers.TIME
 import com.croumy.nbascores.presentation.helpers.toDate
 import com.croumy.nbascores.presentation.models.enums.GameStatus
 import java.util.Date
@@ -59,9 +57,7 @@ data class Team(
     val inBonus: String,
     val timeoutsRemaining: Int,
     val periods: List<Period>
-) {
-    val logo get() = TeamPicture.valueOf(teamTricode).logo
-}
+)
 
 data class Period(
     val period: Int,
