@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -23,6 +25,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -48,6 +51,7 @@ android {
 dependencies {
     def compose_version = '1.4.2'
     def wear_compose_version = '1.1.2'
+    def hilt_version = '2.45'
 
     // CORE
     implementation 'androidx.core:core-ktx:1.10.0'
@@ -65,7 +69,12 @@ dependencies {
     implementation "androidx.wear.compose:compose-material:$wear_compose_version"
     implementation "androidx.wear.compose:compose-foundation:$wear_compose_version"
     implementation "androidx.wear.compose:compose-navigation:$wear_compose_version"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
 
+    //HILT
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
     // Data
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -81,4 +90,8 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+}
+
+kapt {
+    correctErrorTypes = true
 }

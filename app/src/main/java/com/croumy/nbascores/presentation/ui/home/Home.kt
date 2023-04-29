@@ -2,6 +2,7 @@ package com.croumy.nbascores.presentation.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
@@ -56,6 +58,8 @@ import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.red
 import com.croumy.nbascores.presentation.theme.shimmerColor
 import com.croumy.nbascores.presentation.ui.components.LiveIndicator
+import com.croumy.nbascores.presentation.ui.components.StatusItem
+import com.croumy.nbascores.presentation.ui.components.TeamItem
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -63,7 +67,8 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = HomeViewModel(),
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigateToGameDetails: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -85,8 +90,10 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) { focusRequester.requestFocus() }
 
-    Scaffold(positionIndicator = { PositionIndicator(scalingLazyListState = listState) }) {
-        TimeText()
+    Scaffold(
+        positionIndicator = { PositionIndicator(scalingLazyListState = listState) },
+        timeText = { TimeText() }
+    ) {
         Box(
             Modifier
                 .pullRefresh(pullRefreshState)
@@ -132,6 +139,7 @@ fun HomeScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colors.surface, CircleShape)
+                                    .clickable { navigateToGameDetails(it.gameId) }
                                     .padding(horizontal = Dimensions.sPadding)
                                     .padding(bottom = Dimensions.sPadding),
                             ) {
@@ -140,28 +148,7 @@ fun HomeScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                 ) {
                                     Spacer(Modifier.height(Dimensions.xxsPadding))
-                                    when (it.gameStatusValue) {
-                                        GameStatus.NOT_STARTED -> Text(
-                                            text = it.gameTime.asString(TIME),
-                                            style = MaterialTheme.typography.body2,
-                                        )
-
-                                        GameStatus.LIVE -> {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                LiveIndicator()
-                                                Spacer(Modifier.width(Dimensions.xxsPadding))
-                                                Text(
-                                                    text = it.period.toString(),
-                                                    style = MaterialTheme.typography.body2,
-                                                )
-                                            }
-                                        }
-
-                                        GameStatus.FINISHED -> Text(
-                                            text = stringResource(id = R.string.done),
-                                            style = MaterialTheme.typography.body2,
-                                        )
-                                    }
+                                    StatusItem(game = it)
                                     Spacer(Modifier.height(Dimensions.xxsPadding))
                                 }
                                 Row(
@@ -169,21 +156,7 @@ fun HomeScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Row {
-                                        Image(
-                                            painter = painterResource(
-                                                id = context.resources.getIdentifier(
-                                                    it.homeTeam.teamTricode.lowercase(),
-                                                    "drawable",
-                                                    context.packageName
-                                                )
-                                            ),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(Dimensions.sIcon)
-                                        )
-                                        Spacer(Modifier.width(Dimensions.xxsPadding))
-                                        Text(text = it.homeTeam.teamName)
-                                    }
+                                    TeamItem(team = it.homeTeam)
                                     if (it.gameStatusValue == GameStatus.LIVE || it.gameStatusValue == GameStatus.FINISHED) {
                                         Row {
                                             Spacer(Modifier.width(Dimensions.xsPadding))
@@ -196,21 +169,7 @@ fun HomeScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Row {
-                                        Image(
-                                            painter = painterResource(
-                                                id = context.resources.getIdentifier(
-                                                    it.awayTeam.teamTricode.lowercase(),
-                                                    "drawable",
-                                                    context.packageName
-                                                )
-                                            ),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(Dimensions.sIcon)
-                                        )
-                                        Spacer(Modifier.width(Dimensions.xxsPadding))
-                                        Text(text = it.awayTeam.teamName)
-                                    }
+                                    TeamItem(team = it.awayTeam)
                                     if (it.gameStatusValue == GameStatus.LIVE || it.gameStatusValue == GameStatus.FINISHED) {
                                         Row {
                                             Spacer(Modifier.width(Dimensions.xsPadding))
