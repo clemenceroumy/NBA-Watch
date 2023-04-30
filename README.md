@@ -1,6 +1,6 @@
-# NBA Watch
-
 ![logo](./documentation/icon.png)
+
+# NBA Watch
 
 NBA Watch is a WearOS application to follow today's NBA events.
 
