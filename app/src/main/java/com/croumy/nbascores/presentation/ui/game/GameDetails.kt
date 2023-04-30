@@ -50,6 +50,7 @@ import androidx.wear.compose.material.swipeable
 import com.croumy.nbascores.presentation.helpers.asString
 import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.NBAscoresTheme
+import com.croumy.nbascores.presentation.ui.components.PageIndicator
 import com.croumy.nbascores.presentation.ui.components.StatusItem
 import com.croumy.nbascores.presentation.ui.components.TeamItem
 import com.croumy.nbascores.presentation.ui.components.TeamLogo
@@ -120,6 +121,14 @@ fun GameDetailsScreen(
                         QTScores(game = game)
                     }
                 //}
+
+                PageIndicator(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = Dimensions.xxsPadding),
+                    selectedIndex = swipeableState.targetValue,
+                    numberItems = 2
+                )
             }
         }
     }

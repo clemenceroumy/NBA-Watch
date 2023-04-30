@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.croumy.nbascores.presentation.models.enums.GameStatus
@@ -32,6 +33,7 @@ fun GameItem(
         modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.surface, CircleShape)
+            .clip(CircleShape)
             .clickable { navigateToGameDetails(game.gameId) }
             .padding(horizontal = Dimensions.sPadding)
             .padding(bottom = Dimensions.sPadding),
