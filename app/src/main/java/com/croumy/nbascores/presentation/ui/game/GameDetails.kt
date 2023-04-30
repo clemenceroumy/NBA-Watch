@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -129,59 +131,82 @@ fun GameDetailsScreen(
                         }
                     }
                 } else {
-                    Row(
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(top = Dimensions.xsPadding)
-                            .padding(horizontal = Dimensions.sPadding),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        (0..4).map {
-                            if(it == 0) {
-                                Column(
-                                    Modifier.weight(1f).height(IntrinsicSize.Max),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(text = "")
-                                    Spacer(Modifier.height(Dimensions.xsPadding))
-                                    Image(
-                                        painter = painterResource(
-                                            id = context.resources.getIdentifier(
-                                                game.homeTeam.teamTricode.lowercase(),
-                                                "drawable",
-                                                context.packageName
-                                            )
-                                        ),
-                                        contentDescription = "",
-                                        modifier = Modifier.size(Dimensions.sIcon)
-                                    )
-                                    Spacer(Modifier.height(Dimensions.xsPadding))
-                                    Image(
-                                        painter = painterResource(
-                                            id = context.resources.getIdentifier(
-                                                game.awayTeam.teamTricode.lowercase(),
-                                                "drawable",
-                                                context.packageName
-                                            )
-                                        ),
-                                        contentDescription = "",
-                                        modifier = Modifier.size(Dimensions.sIcon)
-                                    )
-                                }
-                            } else {
-                                Column(
-                                    Modifier.weight(1f).height(IntrinsicSize.Max),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Text(text = "Q$it", style = MaterialTheme.typography.body2)
-                                    Spacer(Modifier.height(Dimensions.xsPadding))
-                                    Text(game.homeTeam.periods[it - 1].score.toString())
-                                    Spacer(Modifier.height(Dimensions.xsPadding))
-                                    Text(game.awayTeam.periods[it - 1].score.toString())
+                    Box(Modifier.fillMaxSize()) {
+                        Row(
+                            Modifier
+                                .height(IntrinsicSize.Max)
+                                .align(Alignment.Center)
+                                .padding(top = Dimensions.xsPadding)
+                                .padding(horizontal = Dimensions.sPadding),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            (0..4).map {
+                                if(it == 0) {
+                                    Column(
+                                        Modifier
+                                            .weight(1f),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(text = "")
+                                        Spacer(Modifier.height(Dimensions.xsPadding))
+                                        Image(
+                                            painter = painterResource(
+                                                id = context.resources.getIdentifier(
+                                                    game.homeTeam.teamTricode.lowercase(),
+                                                    "drawable",
+                                                    context.packageName
+                                                )
+                                            ),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(Dimensions.sIcon)
+                                        )
+                                        Spacer(Modifier.height(Dimensions.xsPadding))
+                                        Image(
+                                            painter = painterResource(
+                                                id = context.resources.getIdentifier(
+                                                    game.awayTeam.teamTricode.lowercase(),
+                                                    "drawable",
+                                                    context.packageName
+                                                )
+                                            ),
+                                            contentDescription = "",
+                                            modifier = Modifier.size(Dimensions.sIcon)
+                                        )
+                                    }
+                                } else {
+                                    Column(
+                                        Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight(),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        Text(text = "Q$it", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.SemiBold))
+                                        Box(
+                                            Modifier.size(Dimensions.sIcon),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(game.homeTeam.periods[it - 1].score.toString())
+                                        }
+                                        Box(
+                                            Modifier.size(Dimensions.sIcon),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(game.awayTeam.periods[it - 1].score.toString())
+                                        }
+                                    }
                                 }
                             }
                         }
+
+                        Text(
+                            text = game.gameScore,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(y = -Dimensions.sPadding)
+                        )
                     }
                 }
             }
