@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,6 +61,7 @@ import com.croumy.nbascores.presentation.theme.shimmerColor
 import com.croumy.nbascores.presentation.ui.components.LiveIndicator
 import com.croumy.nbascores.presentation.ui.components.StatusItem
 import com.croumy.nbascores.presentation.ui.components.TeamItem
+import com.croumy.nbascores.presentation.ui.home.components.GameItem
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -122,6 +124,7 @@ fun HomeScreen(
                         .focusable(),
                     verticalArrangement = Arrangement.spacedBy(Dimensions.xsPadding),
                     contentPadding = PaddingValues(bottom = Dimensions.sPadding),
+                    userScrollEnabled = viewModel.games.value.size > 1
                 ) {
                     if (viewModel.isLoading.value) {
                         items((0..1).toList()) {
@@ -135,48 +138,19 @@ fun HomeScreen(
                         }
                     } else {
                         items(viewModel.games.value) {
-                            Column(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colors.surface, CircleShape)
-                                    .clickable { navigateToGameDetails(it.gameId) }
-                                    .padding(horizontal = Dimensions.sPadding)
-                                    .padding(bottom = Dimensions.sPadding),
-                            ) {
-                                Column(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Spacer(Modifier.height(Dimensions.xxsPadding))
-                                    StatusItem(game = it)
-                                    Spacer(Modifier.height(Dimensions.xxsPadding))
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    TeamItem(team = it.homeTeam)
-                                    if (it.gameStatusValue == GameStatus.LIVE || it.gameStatusValue == GameStatus.FINISHED) {
-                                        Row {
-                                            Spacer(Modifier.width(Dimensions.xsPadding))
-                                            Text(text = it.homeTeam.score.toString())
-                                        }
-                                    }
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    TeamItem(team = it.awayTeam)
-                                    if (it.gameStatusValue == GameStatus.LIVE || it.gameStatusValue == GameStatus.FINISHED) {
-                                        Row {
-                                            Spacer(Modifier.width(Dimensions.xsPadding))
-                                            Text(text = it.awayTeam.score.toString())
-                                        }
-                                    }
-                                }
+                            GameItem(
+                                game = it,
+                                navigateToGameDetails = navigateToGameDetails
+                            )
+                        }
+                        if(viewModel.games.value.size == 1) {
+                            item {
+                                Box(
+                                    Modifier
+                                        .background(Color.Transparent)
+                                        .fillMaxWidth()
+                                        .height(0.dp)
+                                )
                             }
                         }
                     }
