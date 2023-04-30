@@ -42,6 +42,7 @@ import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.NBAscoresTheme
 import com.croumy.nbascores.presentation.ui.components.StatusItem
 import com.croumy.nbascores.presentation.ui.components.TeamItem
+import com.croumy.nbascores.presentation.ui.game.components.BigScore
 import java.util.Calendar
 
 @OptIn(ExperimentalWearMaterialApi::class)
@@ -142,38 +143,10 @@ fun GameDetailsScreen(
                         ) {
                             (0..4).map {
                                 if(it == 0) {
-                                    Column(
-                                        Modifier
-                                            .weight(1f),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(text = "")
-                                        Spacer(Modifier.height(Dimensions.xsPadding))
-                                        Image(
-                                            painter = painterResource(
-                                                id = context.resources.getIdentifier(
-                                                    game.homeTeam.teamTricode.lowercase(),
-                                                    "drawable",
-                                                    context.packageName
-                                                )
-                                            ),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(Dimensions.sIcon)
-                                        )
-                                        Spacer(Modifier.height(Dimensions.xsPadding))
-                                        Image(
-                                            painter = painterResource(
-                                                id = context.resources.getIdentifier(
-                                                    game.awayTeam.teamTricode.lowercase(),
-                                                    "drawable",
-                                                    context.packageName
-                                                )
-                                            ),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(Dimensions.sIcon)
-                                        )
-                                    }
+                                    BigScore(
+                                        modifier = Modifier.weight(1f),
+                                        game = game
+                                    )
                                 } else {
                                     Column(
                                         Modifier
@@ -182,7 +155,7 @@ fun GameDetailsScreen(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        Text(text = "Q$it", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.SemiBold))
+                                        Text(text = "Q$it", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold))
                                         Box(
                                             Modifier.size(Dimensions.sIcon),
                                             contentAlignment = Alignment.Center

@@ -26,25 +26,13 @@ fun TeamItem(
     team: Team,
     reverse: Boolean = false
 ) {
-    val context = LocalContext.current
-
     CompositionLocalProvider(LocalLayoutDirection provides if(reverse) LayoutDirection.Rtl else LayoutDirection.Ltr) {
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
-            Image(
-                painter = painterResource(
-                    id = context.resources.getIdentifier(
-                        team.teamTricode.lowercase(),
-                        "drawable",
-                        context.packageName
-                    )
-                ),
-                contentDescription = "",
-                modifier = Modifier.size(Dimensions.sIcon)
-            )
+            TeamLogo(team = team)
             Spacer(Modifier.width(Dimensions.xxsPadding))
             Text(text = team.teamName)
         }
