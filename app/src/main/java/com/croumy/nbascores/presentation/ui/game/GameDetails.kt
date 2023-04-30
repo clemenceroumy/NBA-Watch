@@ -1,5 +1,13 @@
 package com.croumy.nbascores.presentation.ui.game
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -19,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +36,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
@@ -54,13 +64,11 @@ fun GameDetailsScreen(
     gameId: String
 ) {
     val currentView = LocalView.current
-    val context = LocalContext.current
 
     val game = viewModel.game.value
 
     val swipeableState = rememberSwipeableState(0)
     val anchors = mapOf(0f to 0, 1f to 1)
-
 
     DisposableEffect(Unit) {
         currentView.keepScreenOn = true
@@ -89,11 +97,29 @@ fun GameDetailsScreen(
                     Spacer(Modifier.height(Dimensions.xsPadding))
                 }
 
-                if(swipeableState.offset.value == 0f) {
-                    BigScore(game = game)
-                } else {
-                    QTScores(game = game)
-                }
+               // if(swipeableState.currentValue == 0) {
+                    AnimatedVisibility(
+                        visible = swipeableState.targetValue == 0,
+                        enter = slideInVertically(animationSpec = spring(
+                            stiffness = Spring.StiffnessMedium,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )) { fullHeight -> -fullHeight },
+                        exit = ExitTransition.None
+                    ) {
+                        BigScore(game = game)
+                    }
+                //} else {
+                    AnimatedVisibility(
+                        visible = swipeableState.targetValue == 1,
+                        enter = slideInVertically(animationSpec = spring(
+                            stiffness = Spring.StiffnessMedium,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )) { fullHeight -> fullHeight },
+                        exit = ExitTransition.None
+                    ) {
+                        QTScores(game = game)
+                    }
+                //}
             }
         }
     }
