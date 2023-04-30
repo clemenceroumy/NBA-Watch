@@ -29,7 +29,7 @@ fun StatusItem(game: Game) {
                 LiveIndicator()
                 Spacer(Modifier.width(Dimensions.xxsPadding))
                 Text(
-                    text = game.period.toString(),
+                    text = "Q${game.period}",
                     style = MaterialTheme.typography.body2,
                 )
             }
