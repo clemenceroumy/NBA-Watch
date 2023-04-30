@@ -14,8 +14,6 @@ class HomeViewModel : ViewModel() {
     val games: MutableState<List<Game>> = mutableStateOf(emptyList())
     val isLoading: MutableState<Boolean> = mutableStateOf(false)
 
-    init { viewModelScope.launch { getGames() } }
-
     suspend fun getGames() {
         isLoading.value = true
         val result = liveService.getTodayGames()
