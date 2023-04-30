@@ -42,7 +42,9 @@ import com.croumy.nbascores.presentation.theme.Dimensions
 import com.croumy.nbascores.presentation.theme.NBAscoresTheme
 import com.croumy.nbascores.presentation.ui.components.StatusItem
 import com.croumy.nbascores.presentation.ui.components.TeamItem
+import com.croumy.nbascores.presentation.ui.components.TeamLogo
 import com.croumy.nbascores.presentation.ui.game.components.BigScore
+import com.croumy.nbascores.presentation.ui.game.components.QTScores
 import java.util.Calendar
 
 @OptIn(ExperimentalWearMaterialApi::class)
@@ -88,99 +90,9 @@ fun GameDetailsScreen(
                 }
 
                 if(swipeableState.offset.value == 0f) {
-                    Box(Modifier.fillMaxSize()) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = Dimensions.xxsPadding)
-                                .align(Alignment.Center)
-                        ) {
-                            TeamItem(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = Dimensions.mPadding),
-                                team = game.homeTeam
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                            ) {
-                                Text(
-                                    text = game.homeTeam.score.toString(),
-                                    style = if (game.homeTeam.score > game.awayTeam.score) MaterialTheme.typography.title1 else MaterialTheme.typography.title2
-                                )
-                                Spacer(Modifier.width(Dimensions.xsPadding))
-                                Text(text = "-", style = MaterialTheme.typography.title2)
-                                Spacer(Modifier.width(Dimensions.xsPadding))
-                                Text(
-                                    text = game.awayTeam.score.toString(),
-                                    style = if (game.awayTeam.score > game.homeTeam.score) MaterialTheme.typography.title1 else MaterialTheme.typography.title2
-                                )
-                            }
-                            TeamItem(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(start = Dimensions.mPadding),
-                                team = game.awayTeam,
-                                reverse = true
-                            )
-                        }
-                        Column(Modifier.align(Alignment.BottomCenter)) {
-                            StatusItem(game = game)
-                            Spacer(Modifier.height(Dimensions.sPadding))
-                        }
-                    }
+                    BigScore(game = game)
                 } else {
-                    Box(Modifier.fillMaxSize()) {
-                        Row(
-                            Modifier
-                                .height(IntrinsicSize.Max)
-                                .align(Alignment.Center)
-                                .padding(top = Dimensions.xsPadding)
-                                .padding(horizontal = Dimensions.sPadding),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            (0..4).map {
-                                if(it == 0) {
-                                    BigScore(
-                                        modifier = Modifier.weight(1f),
-                                        game = game
-                                    )
-                                } else {
-                                    Column(
-                                        Modifier
-                                            .weight(1f)
-                                            .fillMaxHeight(),
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        verticalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(text = "Q$it", style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold))
-                                        Box(
-                                            Modifier.size(Dimensions.sIcon),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Text(game.homeTeam.periods[it - 1].score.toString())
-                                        }
-                                        Box(
-                                            Modifier.size(Dimensions.sIcon),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            Text(game.awayTeam.periods[it - 1].score.toString())
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        Text(
-                            text = game.gameScore,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .offset(y = -Dimensions.sPadding)
-                        )
-                    }
+                    QTScores(game = game)
                 }
             }
         }
