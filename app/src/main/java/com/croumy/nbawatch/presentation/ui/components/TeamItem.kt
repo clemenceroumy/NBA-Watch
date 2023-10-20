@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.BeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.wear.compose.material.Text
 import com.croumy.nbawatch.presentation.theme.Dimensions
@@ -34,7 +35,7 @@ fun TeamItem(
         ) {
             TeamLogo(team = team)
             Spacer(Modifier.width(Dimensions.xxsPadding))
-            Text(text = team.teamName)
+            Text(text = team.teamName, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }

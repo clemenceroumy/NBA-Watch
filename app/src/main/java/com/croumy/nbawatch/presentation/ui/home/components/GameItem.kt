@@ -51,7 +51,7 @@ fun GameItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            TeamItem(team = game.homeTeam)
+            TeamItem(team = game.homeTeam, modifier = Modifier.weight(1f))
             if (game.gameStatusValue == GameStatus.LIVE || game.gameStatusValue == GameStatus.FINISHED) {
                 Row {
                     Spacer(Modifier.width(Dimensions.xsPadding))
@@ -64,7 +64,7 @@ fun GameItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            TeamItem(team = game.awayTeam)
+            TeamItem(team = game.awayTeam, modifier = Modifier.weight(1f))
             if (game.gameStatusValue == GameStatus.LIVE || game.gameStatusValue == GameStatus.FINISHED) {
                 Row {
                     Spacer(Modifier.width(Dimensions.xsPadding))
